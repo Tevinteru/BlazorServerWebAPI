@@ -1,0 +1,67 @@
+﻿@page "/AddStudent"
+@inject StudentService studentService
+@inject NavigationManager NavigationManager
+
+<h1>Добавить студента</h1>
+
+<form>
+    <div class="row">
+        <div class="col-sm-8">
+          
+            <div class="form-group">
+                <label for="Surname" class="control-label">Фамилия</label>
+                <input form="Surname" class="form-control" @bind="student.Surname" />
+            </div>
+            <div class="form-group">
+                <label for="Name" class="control-label">Имя</label>
+                <input form="Name" class="form-control" @bind="student.Name" />
+            </div>
+            <div class="form-group">
+                <label for="Otch" class="control-label">Отчество</label>
+                <input form="Otch" class="form-control" @bind="student.Otch" />
+            </div>
+            <div class="form-group">
+                <label for="Group" class="control-label">Группа</label>
+                <input form="Group" class="form-control" @bind="student.Group" />
+            </div>
+            <div class="form-group">
+                <label for="BirthDate" class="control-label">День рождения</label>
+                <input form="BirthDate" type="date" class="form-control" @bind="student.BirthDate" />
+            </div>
+            <div class="form-group">
+                <label for="AverageScore" class="control-label">Ср. балл</label>
+                <input form="AverageScore" class="form-control" @bind="student.AverageScore" />
+            </div>
+            <div class="form-group">
+                <label for="Scholarship" class="control-label">Стипендия</label>
+                <input form="Scholarship" class="form-control" @bind="student.Scholarship" />
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <input type="button" class="btn btn-primary" @onclick="@CreateStudent" value="Сохранить" />
+                    <input type="button" class="btn btn-primary" @onclick="@Cancel" value="Отмена" />
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+
+@code {
+    Student student = new Student();
+    protected async void CreateStudent()
+    {
+        await studentService.AddStudentAsync(student);
+        NavigationManager.NavigateTo("Students");
+    }
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("Students");
+
+    }
+    
+}
