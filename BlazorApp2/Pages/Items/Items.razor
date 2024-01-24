@@ -1,0 +1,64 @@
+﻿@page "/Items"
+@inject ItemService itemService
+
+<NavLink class="nav-link" href="AddItem">
+    <span class="oi oi-plus" aria-hidden="true">
+        Добавить прпедмертм
+    </span>
+</NavLink>
+<h1>перереап</h1>
+@if (items is null)
+{
+    <p><em>Загрузка...</em></p>
+}
+else
+{
+    <div class="container">
+
+        <div class="row bg-light">
+            <table class="table table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Id</th>
+                        <th>Имя</th>
+                        <th>Фото</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var item in items)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>@item.Name</td>
+                            <td>
+                                <img src="@($"data:image/png;base64,{Convert.ToBase64String(item.Image)}")" />
+                            </td>
+                            <td>
+                                <a href="EditItem/@item.Id">
+                                    <span>Редактировать</span>
+                                </a>
+                                <a href="DeleteItem/@item.Id">
+                                    <span>Удалить</span>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                   
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+@code {
+
+
+
+    List<Item> items;
+    protected override async Task OnInitializedAsync()
+    {
+        items = await Task.Run(() => itemService.GetAllItemAsync());
+    }
+}

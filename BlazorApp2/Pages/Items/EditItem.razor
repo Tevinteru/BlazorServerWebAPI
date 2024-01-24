@@ -1,0 +1,72 @@
+﻿@page "/EditItem/{id}"
+@inject ItemService itemService
+@inject NavigationManager NavigationManager
+<h2>
+    Редактировать предмет
+</h2>
+
+<form>
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="form-group">
+                <label for="id" class="control-label">id Сотрудника</label>
+                <input form="id" class="form-control" @bind="items.Id" disabled />
+            </div>
+            <div class="form-group">
+                <label for="Surname" class="control-label">Имя</label>
+                <input form="Surname" class="form-control" @bind="items.Name" />
+            </div>
+            <div class="form-group">
+                <label for="Image" class="control-label">Фотография</label>
+                <InputFile form="Image" class="form-control" OnChange="@LoadFiles" multiple />
+            </div>
+
+
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <input type="button" class="btn btn-primary" @onclick="@UpdateItem" value="Сохранить" />
+                    <input type="button" class="btn btn-primary" @onclick="@Cancel" value="Отмена" />
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    Item items = new Item();
+
+    protected override async Task OnInitializedAsync()
+    {
+        items = await Task.Run(() => itemService.GetItemAsync(Convert.ToInt32(Id)));
+    }
+    protected async void UpdateItem()
+    {
+        await itemService.UpdateItemAsync(items);
+        NavigationManager.NavigateTo("Items");
+
+    }
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("Items");
+    }
+    
+
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        var file = e.GetMultipleFiles().First();
+        items.Image = await ReadFileBytesAsync(file);
+    }
+
+    private async Task<byte[]> ReadFileBytesAsync(IBrowserFile file)
+    {
+        Stream stream = file.OpenReadStream();
+        using MemoryStream ms = new MemoryStream();
+        await stream.CopyToAsync(ms);
+        return ms.ToArray();
+    }
+}

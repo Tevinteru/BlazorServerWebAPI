@@ -12,6 +12,7 @@ builder.Services.AddDbContext<StudentContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("StudentContext") ?? throw new InvalidOperationException("Connection string 'BlazorApp2Context' not found.")));
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<StudentService>();
+builder.Services.AddScoped<ItemService>();
 
 var app = builder.Build();
 

@@ -1,0 +1,56 @@
+﻿@page "/DeleteItem/{id}"
+@inject ItemService studentService
+@inject NavigationManager NavigationManager
+
+<h1>Удалить предмет</h1>
+
+<form>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form-group">
+                <label>Предмет: Id</label>
+                <label>@items.Id</label>
+            </div>
+            
+             <div class="form-group">
+                <label>Предмет: Название</label>
+                <label>@items.Name</label>
+            </div>
+            <div class="form-group">
+                <label>Предмет: Фотография</label>
+                <label>@items.Image</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <input type="button" class="btn btn-danger" @onclick="@Delete" value="Удалить" />
+                    <input type="button" class="btn btn-danger" @onclick="@Cancel" value="Отмена" />
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    Item items = new Item();
+
+    protected override async Task OnInitializedAsync()
+    {
+        items = await Task.Run(() => studentService.GetItemAsync(Convert.ToInt32(Id)));
+    }
+    protected async void Delete()
+    {
+        await studentService.DeleteItemAsync(items);
+        NavigationManager.NavigateTo("Items");
+
+    }
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("Items");
+    }
+
+}

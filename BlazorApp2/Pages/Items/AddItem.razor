@@ -1,0 +1,69 @@
+﻿@page "/AddItem"
+@inject ItemService studentService
+@inject NavigationManager NavigationManager
+
+<h1>Добавить предмет</h1>
+
+<form>
+    <div class="row">
+        <div class="col-sm-8">
+
+
+            <div class="form-group">
+                <label for="Name" class="control-label">Имя</label>
+                <input form="Name" class="form-control" @bind="item.Name" />
+            </div>
+            <div class="form-group">
+                <label for="Image" class="control-label">Фотография</label>
+                <InputFile form="Image" class="form-control" OnChange="@LoadFiles" multiple />
+            </div>
+
+
+
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <input type="button" class="btn btn-primary" @onclick="@CreateItem" value="Сохранить" />
+                    <input type="button" class="btn btn-primary" @onclick="@Cancel" value="Отмена" />
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+
+@code {
+    Item item = new Item();
+    IBrowserFile file;
+
+    protected async void CreateItem()
+    {
+        await studentService.AddItemAsync(item);
+        NavigationManager.NavigateTo("Items");
+    }
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("Items");
+
+    }
+   
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        var file = e.GetMultipleFiles().First();
+        item.Image = await ReadFileBytesAsync(file);
+    }
+
+
+    private async Task<byte[]> ReadFileBytesAsync(IBrowserFile file)
+    {
+        Stream stream = file.OpenReadStream();
+        using MemoryStream ms = new MemoryStream();
+        await stream.CopyToAsync(ms);
+        return ms.ToArray();
+    }
+
+
+
+}

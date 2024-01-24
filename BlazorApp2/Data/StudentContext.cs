@@ -15,5 +15,6 @@ namespace BlazorApp2.Data
         }
 
         public DbSet<Student> Student { get; set; }
+        public DbSet<Item> Item { get; set; }
     }
 }
